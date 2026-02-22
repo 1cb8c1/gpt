@@ -3,7 +3,7 @@ DESTDIR =
 
 install:
 	mkdir -p $(DESTDIR)$(PREFIX)/bin
-	cp -f gpt $(DESTDIR)$(PREFIX)/bin/gpt
+	cp -f gpt.sh $(DESTDIR)$(PREFIX)/bin/gpt
 	chmod 755 $(DESTDIR)$(PREFIX)/bin/gpt
 
 uninstall:
