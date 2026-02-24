@@ -8,21 +8,37 @@ fi
 CONTEXT=$(cat <<EOF
 You are being called from CLI.
 Provide as concise and accurate answer as possible.
-I repeat, keep it as short as possible, quick and snappy answers.
 Please answer in plain text, without any formatting,
 unless the question explicitly asks for it.
+The out you create, will be used as a direct output in the terminal,
+so do not include any explanations, comments, or additional information,
+unless explicitly asked for.
+When USER_PROMPT_STDIN is provided, it is usually output from another command,
+while USER_PROMPT_ARGS is usually a question/task or additional context.
 EOF
 )
 
-if [ "$#" -gt 0 ]; then
-	USER_PROMPT="$*"
+if [ ! -t 0 ]; then
+	USER_PROMPT_STDIN=$(cat -)
 else
-	USER_PROMPT=$(cat)
+	USER_PROMPT_STDIN=""
+fi
+
+if [ "$#" -gt 0 ]; then
+	USER_PROMPT_ARGS="$*"
+else
+	USER_PROMPT_ARGS=""
+fi
+
+if [ -z "$USER_PROMPT_STDIN" ] && [ -z "$USER_PROMPT_ARGS" ]; then
+	echo "[Error] No input provided." >&2
+	exit 1
 fi
 
 PROMPT=$(cat <<EOF | jq -Rs .
 context: $CONTEXT
-user_prompt: $USER_PROMPT
+user_prompt_stdin: $USER_PROMPT_STDIN
+user_prompt_args: $USER_PROMPT_ARGS
 EOF
 )
 
