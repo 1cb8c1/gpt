@@ -18,16 +18,12 @@ while USER_PROMPT_ARGS is usually a question/task or additional context.
 EOF
 )
 
+USER_PROMPT_ARGS="$*"
+
 if [ ! -t 0 ]; then
 	USER_PROMPT_STDIN=$(cat -)
 else
 	USER_PROMPT_STDIN=""
-fi
-
-if [ "$#" -gt 0 ]; then
-	USER_PROMPT_ARGS="$*"
-else
-	USER_PROMPT_ARGS=""
 fi
 
 if [ -z "$USER_PROMPT_STDIN" ] && [ -z "$USER_PROMPT_ARGS" ]; then
@@ -37,8 +33,8 @@ fi
 
 PROMPT=$(cat <<EOF | jq -Rs .
 context: $CONTEXT
-user_prompt_stdin: $USER_PROMPT_STDIN
 user_prompt_args: $USER_PROMPT_ARGS
+user_prompt_stdin: $USER_PROMPT_STDIN
 EOF
 )
 
